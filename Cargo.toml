@@ -14,3 +14,7 @@ readme = "README.md"
 [dev-dependencies]
 pretty_assertions = "0.6.1"
 duct = "0.13"
+
+[[bin]]
+name = "example"
+path = "example/main.rs"

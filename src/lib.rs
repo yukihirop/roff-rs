@@ -107,6 +107,74 @@ pub fn list<'c1, 'c2, C1: Troffable, C2: Troffable>(
     format!(".TP\n{}\n{}", header.render(), content.render())
 }
 
+pub fn lf<'c1, C1: Troffable>(
+    content: &'c1 [C1],
+) -> String {
+    // format!("{}\\fR\n.\n.br\n", content.render())
+    format!(r#"
+{}\fR
+.
+.br"#
+    ,content.render())
+}
+
+pub fn p<'c1, C1: Troffable>(
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+{}
+.P"#
+    ,content.render())
+}
+
+pub fn s<'c1, C1: Troffable>(
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+{}
+."#
+    ,content.render())
+}
+
+pub fn ul<'c1, C1: Troffable>(
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+{}
+.IP "" 0
+."#
+    ,content.render())
+}
+
+pub fn li<'c1 , C1: Troffable>(
+    indent: usize,
+    content: &'c1 [C1],
+) -> String {
+    format!(r#"
+.IP "\(bu" {}
+{}
+."#,
+    indent,
+    content.render())
+}
+
+pub fn nf<'c1, C1: Troffable>(
+    indent: usize,
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+.IP "" {}
+.
+.nf
+{}
+.
+.fi
+.
+.IP "" 0
+.
+"#, indent, content.render())
+}
+
 fn escape(input: &str) -> String {
     input.replace("-", r"\-")
 }
