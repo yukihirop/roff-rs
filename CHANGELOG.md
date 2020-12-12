@@ -10,3 +10,5 @@ Support methods (@yukihirop)
 - ul
 - li
 - nf
+
+See also [milestone v0.2.0](https://github.com/yukihirop/roff-rs/milestone/1)
