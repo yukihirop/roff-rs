@@ -1,6 +1,6 @@
 [package]
 name = "roff"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Pascal Hertleif <killercup@gmail.com>"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/killercup/roff-rs"
@@ -14,3 +14,7 @@ readme = "README.md"
 [dev-dependencies]
 pretty_assertions = "0.6.1"
 duct = "0.13"
+
+[[bin]]
+name = "example"
+path = "example/main.rs"

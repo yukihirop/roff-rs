@@ -87,6 +87,12 @@ OPTIONS
                                      CORRUPT(1)
 ```
 
+## Sample
+
+```bash
+cargo run --bin example > ./tmp/app.man; man ./tmp/app.man
+```
+
 ## License
 
 Licensed under either of

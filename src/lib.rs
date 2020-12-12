@@ -4,14 +4,20 @@ use std::fmt::Write;
 pub struct Roff {
     title: String,
     section: i8,
+    footer: String,
+    current: String,
+    header: String,
     content: Vec<Section>,
 }
 
 impl Roff {
-    pub fn new(title: &str, section: i8) -> Self {
+    pub fn new(title: &str, section: i8, footer: &str, current: &str, header: &str) -> Self {
         Roff {
             title: title.into(),
             section,
+            footer: footer.into(),
+            current: current.into(),
+            header: header.into(),
             content: Vec::new(),
         }
     }
@@ -35,9 +41,12 @@ impl Troffable for Roff {
 
         writeln!(
             &mut res,
-            ".TH {} {}",
+            r#".TH "{}" "{}" "{}" "{}" "{}""#,
             self.title.to_uppercase(),
-            self.section
+            self.section,
+            self.footer.to_uppercase(),
+            self.current.to_uppercase(),
+            self.header.to_uppercase()
         ).unwrap();
         for section in &self.content {
             writeln!(&mut res, "{}", escape(&section.render())).unwrap();
@@ -105,6 +114,74 @@ pub fn list<'c1, 'c2, C1: Troffable, C2: Troffable>(
     content: &'c2 [C2],
 ) -> String {
     format!(".TP\n{}\n{}", header.render(), content.render())
+}
+
+pub fn lf<'c1, C1: Troffable>(
+    content: &'c1 [C1],
+) -> String {
+    // format!("{}\\fR\n.\n.br\n", content.render())
+    format!(r#"
+{}\fR
+.
+.br"#
+    ,content.render())
+}
+
+pub fn p<'c1, C1: Troffable>(
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+{}
+.P"#
+    ,content.render())
+}
+
+pub fn s<'c1, C1: Troffable>(
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+{}
+."#
+    ,content.render())
+}
+
+pub fn ul<'c1, C1: Troffable>(
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+{}
+.IP "" 0
+."#
+    ,content.render())
+}
+
+pub fn li<'c1 , C1: Troffable>(
+    indent: usize,
+    content: &'c1 [C1],
+) -> String {
+    format!(r#"
+.IP "\(bu" {}
+{}
+."#,
+    indent,
+    content.render())
+}
+
+pub fn nf<'c1, C1: Troffable>(
+    indent: usize,
+    content: &'c1 [C1]
+) -> String {
+    format!(r#"
+.IP "" {}
+.
+.nf
+{}
+.
+.fi
+.
+.IP "" 0
+.
+"#, indent, content.render())
 }
 
 fn escape(input: &str) -> String {
