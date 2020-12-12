@@ -4,14 +4,20 @@ use std::fmt::Write;
 pub struct Roff {
     title: String,
     section: i8,
+    footer: String,
+    current: String,
+    header: String,
     content: Vec<Section>,
 }
 
 impl Roff {
-    pub fn new(title: &str, section: i8) -> Self {
+    pub fn new(title: &str, section: i8, footer: &str, current: &str, header: &str) -> Self {
         Roff {
             title: title.into(),
             section,
+            footer: footer.into(),
+            current: current.into(),
+            header: header.into(),
             content: Vec::new(),
         }
     }
@@ -35,9 +41,12 @@ impl Troffable for Roff {
 
         writeln!(
             &mut res,
-            ".TH {} {}",
+            r#".TH "{}" "{}" "{}" "{}" "{}""#,
             self.title.to_uppercase(),
-            self.section
+            self.section,
+            self.footer.to_uppercase(),
+            self.current.to_uppercase(),
+            self.header.to_uppercase()
         ).unwrap();
         for section in &self.content {
             writeln!(&mut res, "{}", escape(&section.render())).unwrap();
